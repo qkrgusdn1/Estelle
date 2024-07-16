@@ -19,7 +19,11 @@ public class Player : MonoBehaviour
     bool noJump;
     public int jumpCount;
 
-    
+    Coroutine resetNoJumpCoroutine;
+    Coroutine resetIsMove;
+
+    bool isBack;
+    bool isMove;
     bool isDash;
     bool isDashing;
     public float deshTime;
@@ -30,12 +34,15 @@ public class Player : MonoBehaviour
     public Joystick joystick;
     private void Start()
     {
+        isMove = true;
         rb = GetComponent<Rigidbody2D>();
         realGravity = rb.gravityScale;
     }
 
     private void Update()
     {
+        if(!hang)
+            rb.gravityScale = realGravity;
         isGrounded = Physics2D.OverlapCircle(root.transform.position, 0.1f, groundLayer);
         Move();
         Jump();
@@ -55,23 +62,17 @@ public class Player : MonoBehaviour
         if (!isDashing)
         {
             float horizontalInput = joystick.Horizontal;
-            rb.velocity = new Vector2(horizontalInput * moveSpeed, rb.velocity.y);
-            if (!hang)
+            if(Mathf.Abs(horizontalInput) > 0.1f && !hang && isMove)
             {
-                rb.gravityScale = realGravity;
-            }
+                isBack = false;
+                rb.velocity = new Vector2(horizontalInput * moveSpeed, rb.velocity.y);
 
-            if (horizontalInput > 0)
-            {
-                if (!hang)
+                if (horizontalInput > 0)
                 {
                     transform.localScale = new Vector2(1, 1);
                     ani.SetBool("IsRun", true);
                 }
-            }
-            else if (horizontalInput < 0)
-            {
-                if (!hang)
+                else if (horizontalInput < 0)
                 {
                     transform.localScale = new Vector2(-1, 1);
                     ani.SetBool("IsRun", true);
@@ -79,19 +80,30 @@ public class Player : MonoBehaviour
             }
             else
             {
-                if (!hang)
-                    ani.SetBool("IsRun", false);
+                ani.SetBool("IsRun", false);
+                isBack = true;
+
+                if (Mathf.Abs(rb.velocity.x) > 0.1f && isBack)
+                {
+                    Vector2 dir = rb.velocity.normalized;
+                    rb.velocity -= new Vector2(dir.x * 0.05f, 0);
+                }
+
             }
+            
+            
+
+           
         }
        
     }
 
     void Jump()
     {
-        
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (isGrounded || !noJump)
+            if (isGrounded || !noJump || hang)
             {
                 noJump = true;
 
@@ -100,12 +112,16 @@ public class Player : MonoBehaviour
 
                 if (hang)
                 {
+                    
                     Debug.Log("hangJump");
                     float moveDirection = transform.localScale.x > 0 ? -1 : 1;
                     Debug.Log("moveDirection : " + moveDirection);
-                    rb.AddForce(new Vector2(moveDirection * jumpPower * 2, jumpPower), ForceMode2D.Impulse);
+                    rb.AddForce(new Vector2(moveDirection * jumpPower * 1.5f, jumpPower), ForceMode2D.Impulse);
                     Debug.Log("rb.velocity" + rb.velocity);
                     hang = false;
+                    if (resetIsMove != null)
+                        StopCoroutine(resetIsMove);
+                    resetIsMove = StartCoroutine(CoSetMove());
                     ani.SetBool("IsClimb", false);
                     ani.SetTrigger("Jump");
                 }
@@ -124,8 +140,10 @@ public class Player : MonoBehaviour
                 }
                 else
                 {
-                    StopCoroutine(ResetNoJump());
-                    StartCoroutine(ResetNoJump());
+                    if(resetNoJumpCoroutine != null)
+                        StopCoroutine(resetNoJumpCoroutine);    
+
+                    resetNoJumpCoroutine = StartCoroutine(ResetNoJump());
                     jumpCount = 2;
                 }
             }
@@ -143,7 +161,15 @@ public class Player : MonoBehaviour
         deshTime += Time.deltaTime;
 
     }
+    IEnumerator CoSetMove()
+    {
+        
+        yield return new WaitForSeconds(0.3f);
+        isMove = true;
+        isBack = false;
 
+
+    }
     IEnumerator CoDesh()
     {
         if (deshTime >= maxDeshTime)
@@ -164,10 +190,7 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(0.2f);
         noJump = false;
-        if (!noJump)
-        {
-            StopCoroutine(ResetNoJump());
-        }
+        
     }
     public void ClickedDashButton()
     {
@@ -221,19 +244,19 @@ public class Player : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Wall"))
+        if (collision.gameObject.CompareTag("ClimbWall"))
         {
             Debug.Log("OnCollisionEnter2D Wall");
             rb.gravityScale = 0;
             rb.velocity = Vector2.zero;
             ani.SetBool("IsClimb", true);
-
+            isMove = false;
             hang = true;
         }
     }
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Wall"))
+        if (collision.gameObject.CompareTag("ClimbWall"))
         {
             Debug.Log("OnCollisionExit2D Wall");
             ani.SetBool("IsClimb", false);
