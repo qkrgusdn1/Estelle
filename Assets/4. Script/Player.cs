@@ -36,7 +36,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        isGrounded = Physics2D.OverlapCircle(transform.position, 0.9f, groundLayer);
+        isGrounded = Physics2D.OverlapCircle(root.transform.position, 0.1f, groundLayer);
         Move();
         Jump();
         DashTime();
@@ -51,10 +51,15 @@ public class Player : MonoBehaviour
 
     void Move()
     {
+        
         if (!isDashing)
         {
             float horizontalInput = joystick.Horizontal;
             rb.velocity = new Vector2(horizontalInput * moveSpeed, rb.velocity.y);
+            if (!hang)
+            {
+                rb.gravityScale = realGravity;
+            }
 
             if (horizontalInput > 0)
             {
@@ -95,8 +100,11 @@ public class Player : MonoBehaviour
 
                 if (hang)
                 {
+                    Debug.Log("hangJump");
                     float moveDirection = transform.localScale.x > 0 ? -1 : 1;
-                    rb.AddForce(new Vector2(moveDirection * jumpPower / 2, jumpPower), ForceMode2D.Impulse);
+                    Debug.Log("moveDirection : " + moveDirection);
+                    rb.AddForce(new Vector2(moveDirection * jumpPower * 2, jumpPower), ForceMode2D.Impulse);
+                    Debug.Log("rb.velocity" + rb.velocity);
                     hang = false;
                     ani.SetBool("IsClimb", false);
                     ani.SetTrigger("Jump");
@@ -215,6 +223,7 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Wall"))
         {
+            Debug.Log("OnCollisionEnter2D Wall");
             rb.gravityScale = 0;
             rb.velocity = Vector2.zero;
             ani.SetBool("IsClimb", true);
@@ -226,8 +235,7 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Wall"))
         {
-            rb.gravityScale = realGravity;
-            rb.velocity = Vector2.zero;
+            Debug.Log("OnCollisionExit2D Wall");
             ani.SetBool("IsClimb", false);
             hang = false;
         }
