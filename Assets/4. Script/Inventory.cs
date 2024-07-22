@@ -42,8 +42,6 @@ public class Inventory : MonoBehaviour
 
         }
         items[key].count++;
-
-        
         foreach (var data in items)
         {
             Debug.Log(data.Key);

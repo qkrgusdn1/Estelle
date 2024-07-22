@@ -194,6 +194,7 @@ public class Player : MonoBehaviour
     }
     public void ClickedDashButton()
     {
+        Debug.Log("ClickedDashButton");
         if(!hang)
             StartCoroutine(CoDesh());
     }
