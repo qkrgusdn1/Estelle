@@ -24,6 +24,10 @@ public class Ball : MonoBehaviour
         {
             collision.gameObject.GetComponent<BallEnemy>().TakeDamage(damage);
         }
+        if (collision.gameObject.CompareTag("Letter"))
+        {
+            collision.GetComponent<Letter>().SetLetterText();
+        }
     }
 
     void Update()

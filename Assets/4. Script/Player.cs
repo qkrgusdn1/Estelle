@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using static Unity.Collections.AllocatorManager;
 
 public class Player : MonoBehaviour
 {
@@ -56,6 +58,7 @@ public class Player : MonoBehaviour
         CheckCameraPosition();
     }
 
+    
     void Move()
     {
         

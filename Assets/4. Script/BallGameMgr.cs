@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BallGameMgr : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class BallGameMgr : MonoBehaviour
     [SerializeField] TMP_Text waveTimeText;
     public int waveLevel;
     public int maxLevel;
+
+    public TMP_Text letterText;
     
     
     public Heart heart;
@@ -29,6 +32,7 @@ public class BallGameMgr : MonoBehaviour
     public bool fali;
 
     public List<BallEnemy> ballEnemiesPoolings = new List<BallEnemy>();
+    public List<Letter> letterPoolings = new List<Letter>();
     public BallEnemy[] ballEnemies;
     public WaveInfo[] waveInfos;
     private void Start()
@@ -50,7 +54,12 @@ public class BallGameMgr : MonoBehaviour
                 Level();
             }
             if (waveLevel >= maxLevel)
+            {
+                DonDestory.Instance.gameClear = true;
+                SceneManager.LoadScene("Go");
                 break;
+            }
+
             waveTime--;
             waveTimeText.text = waveTime.ToString();
 
@@ -63,6 +72,8 @@ public class BallGameMgr : MonoBehaviour
     public void Level()
     {
         waveLevel++;
+        if (waveLevel >= maxLevel)
+            return;
         waveText.text = "Wave" + " " + (waveLevel + 1).ToString();
         waveTime = repeatWaveTime;
         waveTimeText.text = waveTime.ToString();
@@ -110,22 +121,29 @@ public class BallGameMgr : MonoBehaviour
     public IEnumerator CoStartWave()
     {
         Debug.Log("Starting wave...");
-        for (int i = 0; i < waveInfos[waveLevel].monsteSpawns.Length; i++)
+        float timePassed = 0;
+        while (0 < waveInfos[waveLevel].spawnTime)
         {
-            float random = Random.Range(0f, 100f);
-            if (random <= waveInfos[waveLevel].monsteSpawns[i].chance)
+            for (int i = 0; i < waveInfos[waveLevel].monsteSpawns.Length; i++)
             {
-                Debug.Log("Spawning Enemy");
-                float randomAngle = Random.Range(0f, 360f);
-                Vector2 randomDirection = new Vector2(Mathf.Cos(randomAngle * Mathf.Deg2Rad), Mathf.Sin(randomAngle * Mathf.Deg2Rad));
-                Vector2 randomPosition = (Vector2)transform.position + randomDirection * radius;
+                float random = Random.Range(0f, 100f);
+                if (random <= waveInfos[waveLevel].monsteSpawns[i].chance)
+                {
+                    Debug.Log("Spawning Enemy");
+                    float randomAngle = Random.Range(0f, 360f);
+                    Vector2 randomDirection = new Vector2(Mathf.Cos(randomAngle * Mathf.Deg2Rad), Mathf.Sin(randomAngle * Mathf.Deg2Rad));
+                    Vector2 randomPosition = (Vector2)transform.position + randomDirection * radius;
 
-                BallEnemy ballEnemy = GetBallEnemy(waveInfos[waveLevel].monsteSpawns[i].type);
-                ballEnemy.transform.position = randomPosition;
+                    BallEnemy ballEnemy = GetBallEnemy(waveInfos[waveLevel].monsteSpawns[i].type);
+                    ballEnemy.transform.position = randomPosition;
+                }
             }
+            yield return new WaitForSeconds(waveInfos[waveLevel].spawnTime);
+            timePassed += waveInfos[waveLevel].spawnTime;
         }
+        
 
-        yield return new WaitForSeconds(waveInfos[waveLevel].spawnTime);
+       
     }
 
 }

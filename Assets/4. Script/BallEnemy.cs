@@ -1,17 +1,18 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class BallEnemy : MonoBehaviour
 {
     public float moveSpeed;
+    public float maxMoveSpeed;
     public float atkRange;
     public int damage;
     public int maxDamage;
     public float attackSpeed;
     bool canAttack;
+
+    public Letter letterPrefab;
 
     public Image hpBar;
     public float hp;
@@ -23,8 +24,12 @@ public class BallEnemy : MonoBehaviour
 
     private void OnEnable()
     {
+        moveSpeed = maxMoveSpeed;
+        canAttack = false;
         StartCoroutine(CoAttack());
+        StopCoroutine(CoBack());
         hp = maxHp;
+        hpBar.fillAmount = hp / maxHp;
     }
     private void Update()
     {
@@ -50,20 +55,47 @@ public class BallEnemy : MonoBehaviour
         }
     }
 
-    
+
 
     public void TakeDamage(float damage)
     {
         back = true;
         hp -= damage;
         hpBar.fillAmount = hp / maxHp;
-        if(hp <= 0)
+        if (hp <= 0)
         {
-            
-            StopCoroutine(CoAttack());
-            StopCoroutine(CoBack());
+            if (Random.Range(0, 2) == 0)
+            {
+                if (BallGameMgr.Instance.letterPoolings.Count > 0)
+                {
+                    bool letterActivated = false;
+                    foreach (Letter letter in BallGameMgr.Instance.letterPoolings)
+                    {
+                        if (!letter.gameObject.activeSelf)
+                        {
+                            letter.gameObject.SetActive(true);
+                            letter.transform.position = transform.position;
+                            letterActivated = true;
+                            break;
+                        }
+                    }
+                    if (!letterActivated)
+                    {
+                        Letter letter = Instantiate(letterPrefab);
+                        letter.transform.position = transform.position;
+                        BallGameMgr.Instance.letterPoolings.Add(letter);
+                    }
+                }
+                else
+                {
+                    Letter letter = Instantiate(letterPrefab);
+                    letter.transform.position = transform.position;
+                    BallGameMgr.Instance.letterPoolings.Add(letter);
+                }
+            }
             gameObject.SetActive(false);
         }
+
     }
     IEnumerator CoAttack()
     {
@@ -103,6 +135,7 @@ public class BallEnemy : MonoBehaviour
     {
         int randomDamage = Random.Range(damage, maxDamage);
         target.GetComponent<Heart>().TakeDamage(randomDamage);
+        StopCoroutine(CoAttack());
         gameObject.SetActive(false);
     }
 }

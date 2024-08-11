@@ -8,6 +8,7 @@ TagManager:
   - ClimbWall
   - Ball
   - Enemy
+  - Letter
   layers:
   - Default
   - TransparentFX
