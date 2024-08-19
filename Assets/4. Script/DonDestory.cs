@@ -26,8 +26,8 @@ public class DonDestory : MonoBehaviour
 
 
 
-
 }
+
 
 public enum GoOrBack
 {

@@ -323,6 +323,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollSpeed: 5
+  start: 0
 --- !u!1 &177113450
 GameObject:
   m_ObjectHideFlags: 0
@@ -369,6 +370,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollSpeed: 4
+  start: 0
 --- !u!212 &177113453
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -904,6 +906,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollSpeed: 4
+  start: 0
 --- !u!1 &463304792
 GameObject:
   m_ObjectHideFlags: 0
@@ -1002,6 +1005,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollSpeed: 6
+  start: 0
 --- !u!1 &471988325
 GameObject:
   m_ObjectHideFlags: 0
@@ -1156,15 +1160,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameType: 0
   texts:
-  - "\uB9CC\uB4E4\uAE30\uAC00"
-  - "\uB108\uBB34"
-  - "\uADC0\uCC2E\uC558\uC9C0\uB9CC"
-  - "\uB9CC\uB4E4\uC5C8\uC9C0"
-  - "\u314E\u314E"
-  - "\uB514\uC790\uC778\uB9CC \uC644\uC131\uB418\uBA74"
-  - "\uB098\uB294 \uBAA8\uB4E0 \uC791\uC5C5\uC744 \uD560 \uC218 \uC788\uC9C0"
-  - "PT DAY\uB294"
-  - "\uB2E4\uB4E4 \uAE34\uC7A5\uD558\uB294\uAC8C \uC88B\uC744\uAC70\uC57C"
+  - "\uC774\uB984 : \uCD5C\uC218\uBE48"
+  - "\uB098\uC774 : 36\uC138"
+  - "\uC88B\uC544\uD558\uB294 \uAC83 : \uB728\uAC1C\uC9C8"
+  - "\uC2EB\uC5B4\uD558\uB294 \uAC83 : \uBC8C\uB808"
+  - "\uBC29\uBB38 \uC0AC\uC720: \uC2A4\uD2B8\uB808\uC2A4\uC131 \uACF5\uD669\uC7A5\uC560"
+  - "\uC74C.. \uBB54\uC9C0 \uC54C\uACA0\uC5B4.."
   nextTextTime: 1
   lv: 1
 --- !u!114 &632866554
@@ -1253,7 +1254,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &632866555
@@ -1664,6 +1665,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollSpeed: 6
+  start: 0
 --- !u!1 &1030936628
 GameObject:
   m_ObjectHideFlags: 0
@@ -1710,6 +1712,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollSpeed: 6
+  start: 0
 --- !u!212 &1030936631
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1808,6 +1811,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollSpeed: 2
+  start: 0
 --- !u!212 &1262297103
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1919,7 +1923,6 @@ MonoBehaviour:
   - "\u314E\u314E"
   - "\uB514\uC790\uC778\uB9CC \uC644\uC131\uB418\uBA74"
   - "\uB098\uB294 \uBAA8\uB4E0 \uC791\uC5C5\uC744 \uD560 \uC218 \uC788\uC9C0"
-  - "PT DAY\uB294"
   - "\uB2E4\uB4E4 \uAE34\uC7A5\uD558\uB294\uAC8C \uC88B\uC744\uAC70\uC57C"
   nextTextTime: 1
   lv: 1
@@ -2066,6 +2069,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollSpeed: 6
+  start: 0
 --- !u!212 &1408706260
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2249,6 +2253,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollSpeed: 2
+  start: 0
 --- !u!1 &1613100868
 GameObject:
   m_ObjectHideFlags: 0
@@ -2295,6 +2300,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollSpeed: 3
+  start: 0
 --- !u!212 &1613100871
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2445,6 +2451,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollSpeed: 3
+  start: 0
 --- !u!1 &2004966578
 GameObject:
   m_ObjectHideFlags: 0
@@ -2583,6 +2590,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollSpeed: 5
+  start: 0
 --- !u!212 &2035460435
 SpriteRenderer:
   m_ObjectHideFlags: 0

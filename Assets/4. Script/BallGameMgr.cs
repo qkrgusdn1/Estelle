@@ -164,6 +164,7 @@ public class BallEnemySpawn
 
 public enum BallEnemyType
 {
-    Closer
+    Closer,
+    CloserBig
 }
 

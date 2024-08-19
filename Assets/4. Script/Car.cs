@@ -28,10 +28,26 @@ public class Car : MonoBehaviour
     public float totalDistance;
     public float elapsedTime;
 
+    private void Start()
+    {
+        if (!DonDestory.Instance.gameClear)
+        {
+            transform.position = new Vector2(-11.5f, transform.position.y);
+        }
+        else
+        {
+            transform.position = new Vector2(11.5f, transform.position.y);
+        }
+            
+
+
+    }
+
     private void Update()
     {
-        if (go)
+        if (!DonDestory.Instance.gameClear)
         {
+            transform.localScale = new Vector2(1, 1);
             elapsedTime += Time.deltaTime;
             if (elapsedTime <= moveDuration)
             {
@@ -40,7 +56,24 @@ public class Car : MonoBehaviour
             }
             else
             {
-                go = false;
+                if (!activeText)
+                {
+                    text.gameObject.SetActive(true);
+                }
+            }
+        }
+        else
+        {
+            
+            transform.localScale = new Vector2(-1, 1);
+            elapsedTime += Time.deltaTime;
+            if (elapsedTime <= moveDuration)
+            {
+                float distanceToMove = (totalDistance / moveDuration) * Time.deltaTime;
+                transform.position += new Vector3(-distanceToMove, 0, 0);
+            }
+            else
+            {
                 if (!activeText)
                 {
                     text.gameObject.SetActive(true);

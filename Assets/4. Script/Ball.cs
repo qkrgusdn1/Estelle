@@ -1,16 +1,42 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Ball : MonoBehaviour
 {
+    private static Ball instance;
+    public static Ball Instance
+    {
+        get
+        {
+            return instance;
+        }
+    }
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+    }
     public int damage;
 
     public Camera mainCamera;
     Rigidbody2D rb;
 
-    bool onDrag;
+    public Image powerBar;
+    public bool onDrag;
     Vector2 startDrag;
+
+    public float maxPower;
+
+
+    public float power
+    {
+        get;
+        private set;
+    }
 
     void Start()
     {
@@ -34,21 +60,29 @@ public class Ball : MonoBehaviour
     {
         if (!onDrag)
         {
-            Vector2 point = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-
-            Collider2D col = Physics2D.OverlapPoint(point, LayerMask.GetMask("Ball"));
-
-            if (col != null)
+            
+            if (Input.GetMouseButtonDown(0))
             {
-                onDrag = true;
-                startDrag = point;
+                Vector2 point = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+                Collider2D col = Physics2D.OverlapPoint(point, LayerMask.GetMask("Ball"));
+
+                if (col != null)
+                {
+                    onDrag = true;
+                    startDrag = point;
+                }
             }
         }
         else
         {
             Vector2 point = mainCamera.ScreenToWorldPoint(Input.mousePosition);
             Vector2 vector = startDrag - point;
-            float power = vector.magnitude;
+            power = vector.magnitude;
+            if (power >= maxPower)
+            {
+                power = maxPower;
+            }
+            
             Vector2 dir = vector.normalized;
 
             if (Input.GetMouseButtonUp(0))

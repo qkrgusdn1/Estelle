@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.ShaderGraph.Internal;
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Unity.Collections.AllocatorManager;
@@ -266,6 +266,18 @@ public class Player : MonoBehaviour
             ani.SetBool("IsClimb", false);
             hang = false;
         }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(HomeMgr.Instance != null)
+        {
+            if (collision.gameObject.CompareTag("Door"))
+            {
+                HomeMgr.Instance.OpenDoor();
+            }
+        }
+
     }
 
 }

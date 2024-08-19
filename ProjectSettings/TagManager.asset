@@ -9,6 +9,7 @@ TagManager:
   - Ball
   - Enemy
   - Letter
+  - Door
   layers:
   - Default
   - TransparentFX

@@ -12,6 +12,8 @@ public class BallEnemy : MonoBehaviour
     public float attackSpeed;
     bool canAttack;
 
+    public GameObject body;
+
     public Letter letterPrefab;
 
     public Image hpBar;
@@ -53,6 +55,8 @@ public class BallEnemy : MonoBehaviour
             }
 
         }
+
+        Flip();
     }
 
 
@@ -137,5 +141,18 @@ public class BallEnemy : MonoBehaviour
         target.GetComponent<Heart>().TakeDamage(randomDamage);
         StopCoroutine(CoAttack());
         gameObject.SetActive(false);
+    }
+
+    private void Flip()
+    {
+ 
+        if (transform.position.x > 0)
+        {
+            body.transform.localScale = new Vector2(-1f, body.transform.localScale.y);
+        }
+        else
+        {
+            body.transform.localScale = new Vector2(1f, body.transform.localScale.y);
+        }
     }
 }
