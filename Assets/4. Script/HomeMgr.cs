@@ -21,23 +21,25 @@ public class HomeMgr : MonoBehaviour
         }
     }
     public TMP_Text dayText;
-    bool left = true;
     public Animator doorAni;
 
-    public void OpenDoor()
+    bool openDoor;
+
+    public void OpenDoor(Transform playerTransform)
     {
-        if (left)
+        Vector3 doorPosition = doorAni.gameObject.transform.position;
+        Vector3 playerPosition = playerTransform.position;
+
+        if (playerPosition.x < doorPosition.x)
         {
-            doorAni.gameObject.transform.localScale = new Vector2(-1, 1);
-            left = false;
+            doorAni.gameObject.transform.localScale = new Vector2(1, 1);
         }
         else
         {
-            doorAni.gameObject.transform.localScale = new Vector2(1, 1);
-            left = true;
+            doorAni.gameObject.transform.localScale = new Vector2(-1, 1);
         }
+
         doorAni.Play("OpenDoor");
-        
     }
 
     private void Start()

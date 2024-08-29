@@ -279,3 +279,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   text: {fileID: 8682288648443025711}
   animator: {fileID: 6084746627702425119}
+  remove: 0

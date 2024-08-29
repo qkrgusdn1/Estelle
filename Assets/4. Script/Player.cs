@@ -61,9 +61,10 @@ public class Player : MonoBehaviour
     
     void Move()
     {
-        
+       
         if (!isDashing)
         {
+            rb.velocity = new Vector3(0, rb.velocity.y, 0);
             float horizontalInput = joystick.Horizontal;
             if(Mathf.Abs(horizontalInput) > 0.1f && !hang && isMove)
             {
@@ -274,7 +275,7 @@ public class Player : MonoBehaviour
         {
             if (collision.gameObject.CompareTag("Door"))
             {
-                HomeMgr.Instance.OpenDoor();
+                HomeMgr.Instance.OpenDoor(transform);
             }
         }
 

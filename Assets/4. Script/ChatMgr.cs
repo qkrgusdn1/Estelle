@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -19,6 +20,8 @@ public class ChatMgr : MonoBehaviour
     private bool mine = true;
     private int chatCount = 0;
     GameType gameType;
+    public int removeCustomerChat;
+    public int spawnChatCount;
 
 
     private void Start()
@@ -49,6 +52,10 @@ public class ChatMgr : MonoBehaviour
 
     private void HandleChatToggle()
     {
+        if(spawnChatCount > 2)
+        {
+            removeCustomerChat++;
+        }
         if (mine)
         {
             DeactivateChats(mineChatPool);
@@ -76,6 +83,7 @@ public class ChatMgr : MonoBehaviour
         {
             Chat chat = Instantiate(prefab, parent);
             chat.gameObject.SetActive(false);
+            chat.remove = false;
             pool.Add(chat);
         }
     }
@@ -87,13 +95,19 @@ public class ChatMgr : MonoBehaviour
             if (!chat.gameObject.activeInHierarchy)
             {
                 chat.transform.position = parent.position;
+                spawnChatCount++;
+                chat.remove = false;
+                
                 chat.gameObject.SetActive(true);
+               
                 return chat;
             }
         }
 
         Chat newChat = Instantiate(pool[0], parent);
+        newChat.remove = false;
         pool.Add(newChat);
+        
         return newChat;
     }
 
@@ -103,9 +117,40 @@ public class ChatMgr : MonoBehaviour
         {
             if (chat.gameObject.activeInHierarchy)
             {
-                chat.gameObject.SetActive(false);
+                for(int i = 0; i < pool.Count; i++)
+                {
+                    if (chat.remove == true && removeCustomerChat >= 1)
+                    {
+                        StartCoroutine(CoChatUp(chat, 209));
+                        chat.gameObject.SetActive(false);
+                        chat.remove = false;
+                        removeCustomerChat = 0;
+                    }
+                }
+                chat.remove = true;
+                StartCoroutine(CoChatUp(chat, 209));
+                chat.animator.Play("ChatUp");
+                
             }
         }
+    }
+
+    private IEnumerator CoChatUp(Chat chat , float upTime)
+    {
+        float duration = 0.7f;
+        float elapsedTime = 0f;
+
+        Vector3 startPosition = chat.transform.position;
+        Vector3 endPosition = new Vector3(startPosition.x, startPosition.y + upTime, startPosition.z);
+
+        while (elapsedTime < duration)
+        {
+            chat.transform.position = Vector3.Lerp(startPosition, endPosition, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        chat.transform.position = endPosition;
     }
 }
 [System.Serializable]
