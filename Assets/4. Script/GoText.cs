@@ -8,7 +8,6 @@ using UnityEngine.SceneManagement;
 public class GoText : MonoBehaviour
 {
     TMP_Text text;
-    public GameType gameType;
 
     public string[] texts;
 
@@ -46,13 +45,8 @@ public class GoText : MonoBehaviour
         }
         else
         {
-            SceneManager.LoadScene(gameType.ToString());
+            SceneManager.LoadScene("Talk");
         }
 
     }
-}
-
-public enum GameType
-{
-    Ball,
 }
