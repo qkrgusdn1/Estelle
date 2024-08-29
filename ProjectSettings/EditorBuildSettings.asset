@@ -15,6 +15,9 @@ EditorBuildSettings:
     path: Assets/1. Scenes/Go.unity
     guid: b795e8c5904a2bd44bb68729dfca0d5b
   - enabled: 1
+    path: Assets/1. Scenes/Talk.unity
+    guid: 446853a84b59c054da47378468f64fde
+  - enabled: 1
     path: Assets/1. Scenes/Ball.unity
     guid: 8644ba1e777221b45860ab65b51582d0
   m_configObjects: {}
