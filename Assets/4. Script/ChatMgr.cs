@@ -95,19 +95,25 @@ public class ChatMgr : MonoBehaviour
             if (!chat.gameObject.activeInHierarchy)
             {
                 chat.transform.position = parent.position;
-                spawnChatCount++;
                 chat.remove = false;
-                
+                spawnChatCount++;
+
+                chat.animator.Rebind();
+                chat.animator.Update(0f);
+
                 chat.gameObject.SetActive(true);
-               
                 return chat;
             }
         }
 
         Chat newChat = Instantiate(pool[0], parent);
         newChat.remove = false;
+        newChat.transform.position = parent.position;
+
+        newChat.animator.Rebind();
+        newChat.animator.Update(0f);
+
         pool.Add(newChat);
-        
         return newChat;
     }
 
@@ -117,27 +123,23 @@ public class ChatMgr : MonoBehaviour
         {
             if (chat.gameObject.activeInHierarchy)
             {
-                for(int i = 0; i < pool.Count; i++)
+                if (chat.remove)
                 {
-                    if (chat.remove == true && removeCustomerChat >= 1)
-                    {
-                        StartCoroutine(CoChatUp(chat, 209));
-                        chat.gameObject.SetActive(false);
-                        chat.remove = false;
-                        removeCustomerChat = 0;
-                    }
+                    StartCoroutine(CoChatUpAndDeactivate(chat, 310, 0.9f));
+                    chat.remove = false;
                 }
-                chat.remove = true;
-                StartCoroutine(CoChatUp(chat, 209));
-                chat.animator.Play("ChatUp");
-                
+                else
+                {
+                    chat.remove = true;
+                    StartCoroutine(CoChatUp(chat, 255, 0.4f));
+                }
             }
         }
     }
 
-    private IEnumerator CoChatUp(Chat chat , float upTime)
+    private IEnumerator CoChatUp(Chat chat, float upTime, float time)
     {
-        float duration = 0.7f;
+        float duration = 0.4f;
         float elapsedTime = 0f;
 
         Vector3 startPosition = chat.transform.position;
@@ -146,11 +148,19 @@ public class ChatMgr : MonoBehaviour
         while (elapsedTime < duration)
         {
             chat.transform.position = Vector3.Lerp(startPosition, endPosition, elapsedTime / duration);
+            chat.animator.Play("ChatUp");
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
         chat.transform.position = endPosition;
+    }
+
+    private IEnumerator CoChatUpAndDeactivate(Chat chat, float upTime, float time)
+    {
+        yield return CoChatUp(chat, upTime, time);
+
+        chat.gameObject.SetActive(false);
     }
 }
 [System.Serializable]

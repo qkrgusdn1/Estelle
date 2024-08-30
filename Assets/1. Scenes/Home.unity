@@ -313,7 +313,7 @@ EdgeCollider2D:
   m_Points:
   - {x: -0.5, y: 0}
   - {x: -0.073396675, y: -0.017979268}
-  - {x: -0.066755734, y: 0.0043120864}
+  - {x: -0.07069712, y: 0.014973061}
   - {x: 0.5, y: 0}
   m_AdjacentStartPoint: {x: 0, y: 0}
   m_AdjacentEndPoint: {x: 0, y: 0}
@@ -1657,7 +1657,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 2.3
   m_Material: {fileID: 6200000, guid: ebb58969f50464042a24cd708b43ec75, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
