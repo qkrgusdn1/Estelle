@@ -17,10 +17,13 @@ public class FallHeartPlayer : MonoBehaviour
     public float hp;
     public float maxHp;
 
+    Animator ani;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         hp = maxHp;
+        ani = GetComponent<Animator>();
     }
 
     private void Update()
@@ -28,16 +31,20 @@ public class FallHeartPlayer : MonoBehaviour
         if (isMovingRight)
         {
             rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
-            body.transform.localScale = new Vector2(1, 1);  
+            body.transform.localScale = new Vector2(1, 1);
+            ani.Play("BearRun");
         }
         else if (isMovingLeft)
         {
             rb.velocity = new Vector2(-moveSpeed, rb.velocity.y);
-            body.transform.localScale = new Vector2(-1, 1); 
+            body.transform.localScale = new Vector2(-1, 1);
+            ani.Play("BearRun");
         }
         else
         {
-            rb.velocity = new Vector2(0, rb.velocity.y); 
+            rb.velocity = new Vector2(0, rb.velocity.y);
+            ani.Play("BearIdle");
+
         }
     }
     public void Heal(float healAmount)
