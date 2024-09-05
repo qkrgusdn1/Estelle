@@ -24,6 +24,8 @@ public class BallEnemy : MonoBehaviour
 
     public BallEnemyType ballEnemyType;
 
+    Collider2D col;
+
     private void OnEnable()
     {
         moveSpeed = maxMoveSpeed;
@@ -32,6 +34,11 @@ public class BallEnemy : MonoBehaviour
         StopCoroutine(CoBack());
         hp = maxHp;
         hpBar.fillAmount = hp / maxHp;
+    }
+
+    private void Start()
+    {
+        col = GetComponent<Collider2D>();
     }
     private void Update()
     {
@@ -127,11 +134,11 @@ public class BallEnemy : MonoBehaviour
     IEnumerator CoBack()
     {
         float backEndTime = Time.time + 1f;
-        Vector2 direction = (transform.position - BallGameMgr.Instance.heart.transform.position).normalized; // Heart 반대 방향
+        Vector2 direction = (transform.position - BallGameMgr.Instance.heart.transform.position).normalized;
 
         while (Time.time < backEndTime)
         {
-            transform.position += (Vector3)(direction * moveSpeed * Time.deltaTime); // Heart 반대 방향으로 이동
+            transform.position += (Vector3)(direction * moveSpeed * Time.deltaTime);
             yield return null;
         }
     }
@@ -155,4 +162,6 @@ public class BallEnemy : MonoBehaviour
             body.transform.localScale = new Vector2(1f, body.transform.localScale.y);
         }
     }
+
+
 }
