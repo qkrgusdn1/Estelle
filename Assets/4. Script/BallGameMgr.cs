@@ -141,9 +141,6 @@ public class BallGameMgr : MonoBehaviour
             yield return new WaitForSeconds(waveInfos[waveLevel].spawnTime);
             timePassed += waveInfos[waveLevel].spawnTime;
         }
-        
-
-       
     }
 
 }

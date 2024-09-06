@@ -273,6 +273,16 @@ MonoBehaviour:
     - "\uD760.."
     - "\uB6DD"
     - '?'
+  - chatTextsMine:
+    - "\uC548\uB155\uD558\uB2E4."
+    - "\uB300\uCCB4 \uC65C\uC9C0"
+    - "\uBDC1"
+    - ...
+    chatTextsCustomer:
+    - "\uC548\uB155 \uBABB\uD568."
+    - "\uD760.."
+    - "\uB6DD"
+    - '?'
   removeCustomerChat: 0
   spawnChatCount: 0
 --- !u!4 &323085961

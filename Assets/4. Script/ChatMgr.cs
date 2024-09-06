@@ -31,6 +31,9 @@ public class ChatMgr : MonoBehaviour
         if(DonDestory.Instance.day == 1)
         {
             gameType = GameType.Ball;
+        }else if(DonDestory.Instance.day == 2)
+        {
+            gameType = GameType.Fall;
         }
     }
 
@@ -172,5 +175,5 @@ public class ChatText
 public enum GameType
 {
     Ball,
-
+    Fall
 }

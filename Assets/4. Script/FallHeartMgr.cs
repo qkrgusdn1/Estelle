@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class FallHeartMgr : MonoBehaviour
 {
@@ -10,9 +12,37 @@ public class FallHeartMgr : MonoBehaviour
     public float spawnHeight;
     public float spawnTime;
     private float elapsedTime;
+    public TMP_Text countText;
+    private float time;
+    float minusTime;
+
     void Start()
     {
         InvokeRepeating("SpawnObject", 0, spawnTime);
+        minusTime = spawnDuration;
+        StartCoroutine(CoCount());
+    }
+
+    IEnumerator CoCount()
+    {
+        while (true)
+        {
+            
+            if (time >= spawnDuration)
+            {
+                DonDestory.Instance.gameClear = true;
+                SceneManager.LoadScene("Go");
+            }
+            
+            time++;
+            if(minusTime > 0)
+            {
+                minusTime--;
+                countText.text = minusTime.ToString();
+            }
+            
+            yield return new WaitForSeconds(1);
+        }
     }
 
     void SpawnObject()
