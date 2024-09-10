@@ -29,9 +29,8 @@ public class Ball : MonoBehaviour
     public bool onDrag;
     Vector2 startDrag;
 
+    public float margin;
     public float maxPower;
-
-
     public float power
     {
         get;
@@ -43,16 +42,20 @@ public class Ball : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Enemy"))
-        {
-            collision.gameObject.GetComponent<BallEnemy>().TakeDamage(damage);
-        }
         if (collision.gameObject.CompareTag("Letter"))
         {
             collision.GetComponent<Letter>().SetLetterText();
+        }
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            collision.GetComponent<BallEnemy>().touch = true;
+            if(collision.GetComponent<BallEnemy>().dontOut == true)
+            {
+                collision.GetComponent<BallEnemy>().col.isTrigger = false;
+            }
+            
         }
     }
 
@@ -60,7 +63,6 @@ public class Ball : MonoBehaviour
     {
         if (!onDrag)
         {
-            
             if (Input.GetMouseButtonDown(0))
             {
                 Vector2 point = mainCamera.ScreenToWorldPoint(Input.mousePosition);
@@ -82,12 +84,13 @@ public class Ball : MonoBehaviour
             {
                 power = maxPower;
             }
-            
+
             Vector2 dir = vector.normalized;
 
             if (Input.GetMouseButtonUp(0))
             {
                 onDrag = false;
+
                 rb.AddForce(dir * power * 50);
             }
         }
@@ -98,7 +101,6 @@ public class Ball : MonoBehaviour
         float slow = 0.99f;
         rb.velocity *= slow;
 
-       
         if (rb.velocity.magnitude < 0.1f)
         {
             rb.velocity = Vector2.zero;

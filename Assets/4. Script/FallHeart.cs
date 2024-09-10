@@ -18,12 +18,12 @@ public class FallHeart : MonoBehaviour
             FallHeartPlayer player = collision.gameObject.GetComponent<FallHeartPlayer>();
             if (!heal)
             {
-                player.TakeDamage(damage);
+                player.TakeDamage();
                 gameObject.SetActive(false);
             }
             else
             {
-                player.Heal(healAmount);
+                player.Heal();
                 gameObject.SetActive(false);
             }
 

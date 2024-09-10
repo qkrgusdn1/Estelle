@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -23,6 +21,11 @@ public class HomeMgr : MonoBehaviour
     public TMP_Text dayText;
     public Animator doorAni;
 
+    public GameObject dontGo;
+    public Player player;
+
+    public Camera camera1;
+    public Camera camera2;
     bool openDoor;
 
     public void OpenDoor(Transform playerTransform)
@@ -47,5 +50,19 @@ public class HomeMgr : MonoBehaviour
         dayText.text = "Day " + DonDestory.Instance.day;
     }
 
+    private void Update()
+    {
+        if (player.transform.position.x > dontGo.transform.position.x)
+        {
+            camera1.gameObject.SetActive(false);
+            camera2.gameObject.SetActive(true);
+            
+        }
+        else
+        {
+            camera1.gameObject.SetActive(true);
+            camera2.gameObject.SetActive(false);
+        }
+    }
 
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class FallHeartMgr : MonoBehaviour
 {
@@ -16,6 +17,22 @@ public class FallHeartMgr : MonoBehaviour
     private float time;
     float minusTime;
 
+    public List<Image> hpImages = new List<Image>();
+    private static FallHeartMgr instance;
+    public static FallHeartMgr Instance
+    {
+        get
+        {
+            return instance;
+        }
+    }
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+    }
     void Start()
     {
         InvokeRepeating("SpawnObject", 0, spawnTime);

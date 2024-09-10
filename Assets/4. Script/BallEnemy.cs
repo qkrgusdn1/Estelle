@@ -15,8 +15,6 @@ public class BallEnemy : MonoBehaviour
     public GameObject body;
 
     public Letter letterPrefab;
-
-    public Image hpBar;
     public float hp;
     public float maxHp;
 
@@ -24,7 +22,17 @@ public class BallEnemy : MonoBehaviour
 
     public BallEnemyType ballEnemyType;
 
-    Collider2D col;
+    public bool touch;
+
+    Rigidbody2D rb;
+
+    public Collider2D col;
+    public bool dontOut;
+
+    bool inRange;
+
+
+    InEnemyEffect inEnemyEffect;
 
     private void OnEnable()
     {
@@ -33,13 +41,27 @@ public class BallEnemy : MonoBehaviour
         StartCoroutine(CoAttack());
         StopCoroutine(CoBack());
         hp = maxHp;
-        hpBar.fillAmount = hp / maxHp;
+        touch = false;
+        col.isTrigger = true;
+        dontOut = false;
+        SpriteRenderer bodySpriteRenderer = body.GetComponent<SpriteRenderer>();
+        if (bodySpriteRenderer != null)
+        {
+            Color bodyColor = bodySpriteRenderer.color;
+            bodyColor.a = 0.7f;
+            bodySpriteRenderer.color = bodyColor;
+        }
+        inRange = false;
     }
 
-    private void Start()
+    void Start()
     {
+        rb = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
+        inEnemyEffect = GetComponentInChildren<InEnemyEffect>(true);
+        
     }
+
     private void Update()
     {
         float distance = Vector2.Distance(transform.position, BallGameMgr.Instance.heart.transform.position);
@@ -66,46 +88,63 @@ public class BallEnemy : MonoBehaviour
         Flip();
     }
 
-
-
-    public void TakeDamage(float damage)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        back = true;
-        hp -= damage;
-        hpBar.fillAmount = hp / maxHp;
-        if (hp <= 0)
+        if (collision.gameObject.CompareTag("Hole") && touch)
         {
-            if (Random.Range(0, 2) == 0)
+            Die();
+        }
+
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("BallGameWall") && !inRange)
+        {
+            inRange = true;
+            inEnemyEffect.gameObject.SetActive(true);
+            dontOut = true;
+            SpriteRenderer bodySpriteRenderer = body.GetComponent<SpriteRenderer>();
+            if (bodySpriteRenderer != null)
             {
-                if (BallGameMgr.Instance.letterPoolings.Count > 0)
+                Color bodyColor = bodySpriteRenderer.color;
+                bodyColor.a = 1;
+                bodySpriteRenderer.color = bodyColor;
+            }
+        }
+    }
+
+    public void Die()
+    {
+        if (Random.Range(0, 2) == 0)
+        {
+            if (BallGameMgr.Instance.letterPoolings.Count > 0)
+            {
+                bool letterActivated = false;
+                foreach (Letter letter in BallGameMgr.Instance.letterPoolings)
                 {
-                    bool letterActivated = false;
-                    foreach (Letter letter in BallGameMgr.Instance.letterPoolings)
+                    if (!letter.gameObject.activeSelf)
                     {
-                        if (!letter.gameObject.activeSelf)
-                        {
-                            letter.gameObject.SetActive(true);
-                            letter.transform.position = transform.position;
-                            letterActivated = true;
-                            break;
-                        }
-                    }
-                    if (!letterActivated)
-                    {
-                        Letter letter = Instantiate(letterPrefab);
+                        letter.gameObject.SetActive(true);
                         letter.transform.position = transform.position;
-                        BallGameMgr.Instance.letterPoolings.Add(letter);
+                        letterActivated = true;
+                        break;
                     }
                 }
-                else
+                if (!letterActivated)
                 {
                     Letter letter = Instantiate(letterPrefab);
                     letter.transform.position = transform.position;
                     BallGameMgr.Instance.letterPoolings.Add(letter);
                 }
             }
-            gameObject.SetActive(false);
+            else
+            {
+                Letter letter = Instantiate(letterPrefab);
+                letter.transform.position = transform.position;
+                BallGameMgr.Instance.letterPoolings.Add(letter);
+            }
         }
+        gameObject.SetActive(false);
 
     }
     IEnumerator CoAttack()
@@ -150,6 +189,8 @@ public class BallEnemy : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+
+
     private void Flip()
     {
  
@@ -162,6 +203,10 @@ public class BallEnemy : MonoBehaviour
             body.transform.localScale = new Vector2(1f, body.transform.localScale.y);
         }
     }
-
+    void FixedUpdate()
+    {
+        float slow = 0.99f;
+        rb.velocity *= slow;
+    }
 
 }

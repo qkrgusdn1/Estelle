@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class FallHeartPlayer : MonoBehaviour
 {
@@ -13,16 +9,13 @@ public class FallHeartPlayer : MonoBehaviour
     bool isMovingRight = false;
     bool isMovingLeft = false;
 
-    public Image hpBar;
-    public float hp;
-    public float maxHp;
-
     Animator ani;
+
+    public int hp = 3;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        hp = maxHp;
         ani = GetComponent<Animator>();
     }
 
@@ -44,23 +37,43 @@ public class FallHeartPlayer : MonoBehaviour
         {
             rb.velocity = new Vector2(0, rb.velocity.y);
             ani.Play("BearIdle");
-
         }
     }
-    public void Heal(float healAmount)
+    public void Heal()
     {
-        if(hp < maxHp)
+        if (0 < hp && hp < 3)
         {
-            hp += healAmount;
-            hpBar.fillAmount = hp / maxHp;
+            hp++;
+            for(int i =0; i < FallHeartMgr.Instance.hpImages.Count; i++)
+            {
+                if (!FallHeartMgr.Instance.hpImages[i].gameObject.activeSelf)
+                {
+                    FallHeartMgr.Instance.hpImages[i].gameObject.SetActive(true);
+                    break;
+                }
+            }
+            
         }
-
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage()
     {
-        hp -= damage;
-        hpBar.fillAmount = hp / maxHp;
+        if (0 < hp && hp <= 3)
+        {
+            hp--;
+            for (int i = 0; i < FallHeartMgr.Instance.hpImages.Count; i++)
+            {
+                if (FallHeartMgr.Instance.hpImages[i].gameObject.activeSelf)
+                {
+                    FallHeartMgr.Instance.hpImages[i].gameObject.SetActive(false);
+                    break;
+                }
+            }
+        }
+        if (hp <= 0)
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     public void OnClickedRightBtn()
