@@ -91,7 +91,7 @@ public class Ball : MonoBehaviour
             {
                 onDrag = false;
 
-                rb.AddForce(dir * power * 50);
+                rb.AddForce(dir * power * 150);
             }
         }
     }

@@ -145,7 +145,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   text: {fileID: 6191682699749429730}
   animator: {fileID: 587434251479706418}
+  mine: 1
   remove: 0
+  isNew: 0
+  rectTransform: {fileID: 2818696114000518457}
+  baseWidth: 0
+  additionalWidthPerChar: 40
+  baseTransform: {fileID: 0}
 --- !u!1 &6570192181900340608
 GameObject:
   m_ObjectHideFlags: 0

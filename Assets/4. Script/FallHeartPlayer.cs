@@ -15,7 +15,7 @@ public class FallHeartPlayer : MonoBehaviour
 
     private void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        rb = GetComponentInChildren<Rigidbody2D>();
         ani = GetComponent<Animator>();
     }
 

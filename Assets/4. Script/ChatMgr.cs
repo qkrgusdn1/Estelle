@@ -7,76 +7,98 @@ using UnityEngine.SceneManagement;
 
 public class ChatMgr : MonoBehaviour
 {
-    public Chat chatPrefabMine;              
-    public Chat chatPrefabCustomer;           
-    public Transform mineChatTransform;       
-    public Transform customerChatTransform;   
-    public ChatText[] chatText;               
+    public Chat chatPrefabMine;
+    public Chat chatPrefabCustomer;
+    public Transform mineChatTransform;
+    public Transform customerChatTransform;
+    public ChatText[] chatText;
 
-    private List<Chat> mineChatPool = new List<Chat>();       
-    private List<Chat> customerChatPool = new List<Chat>();   
-    private List<Chat> activeChats = new List<Chat>();         
+    private List<Chat> mineChatPool = new List<Chat>();
+    private List<Chat> customerChatPool = new List<Chat>();
+    private List<Chat> activeChats = new List<Chat>();
 
-    private bool mine = true;
-    private int chatCount = 0;
-    GameType gameType;
-    public int removeCustomerChat;
+    private int mineChatCount = 0;      // 마인의 채팅 카운트
+    private int customerChatCount = 0;  // 커스터머의 채팅 카운트
     public int spawnChatCount;
 
+    private int chatOrderIndex = 0;     // 현재 차례의 인덱스
+    private int currentRepeatCount = 0; // 현재 말하는 차례에서의 반복 횟수
+
+    public GameObject pool;
+    public GameObject bear;
 
     private void Start()
     {
         InitializePool(mineChatPool, chatPrefabMine, 5, mineChatTransform);
         InitializePool(customerChatPool, chatPrefabCustomer, 5, customerChatTransform);
-        if(DonDestory.Instance.day == 1)
-        {
-            gameType = GameType.Ball;
-        }else if(DonDestory.Instance.day == 2)
-        {
-            gameType = GameType.Fall;
-        }
     }
 
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if(chatCount < chatText[DonDestory.Instance.day - 1].chatTextsMine.Length)
+            var currentChatText = chatText[DonDestory.Instance.day - 1];
+            if (mineChatCount < currentChatText.chatTextsMine.Length || customerChatCount < currentChatText.chatTextsCustomer.Length)
             {
                 HandleChatToggle();
             }
-            else if(chatCount >= chatText[DonDestory.Instance.day - 1].chatTextsMine.Length)
+            else
             {
-                SceneManager.LoadScene(gameType.ToString());
+                if (DonDestory.Instance.day == 1)
+                {
+                    pool.SetActive(true);
+                }
+                else if (DonDestory.Instance.day == 2)
+                {
+                    bear.SetActive(true);
+                }
             }
-            
         }
     }
 
     private void HandleChatToggle()
     {
-        if(spawnChatCount > 2)
+        var currentChatText = chatText[DonDestory.Instance.day - 1]; // 현재 day's ChatText
+
+        // 현재 차례에 따라 마인 또는 고객이 말하는 로직
+        int currentChatOrder = currentChatText.chatOrder[chatOrderIndex];
+
+        if (currentRepeatCount < currentChatOrder)
         {
-            removeCustomerChat++;
+            if (chatOrderIndex % 2 == 0) // 마인의 차례
+            {
+                DeactivateChats(mineChatPool);
+                Chat chat = GetChatFromPool(mineChatPool, mineChatTransform);
+                chat.text.text = currentChatText.chatTextsMine[mineChatCount]; // 마인 채팅 텍스트
+                chat.AdjustWidthBasedOnText();
+                chat.animator.Play("Chat");
+                activeChats.Add(chat);
+                currentRepeatCount++;
+                mineChatCount++;  // 마인 채팅 카운트 증가
+            }
+            else // 고객의 차례
+            {
+                DeactivateChats(customerChatPool);
+                Chat chat = GetChatFromPool(customerChatPool, customerChatTransform);
+                chat.text.text = currentChatText.chatTextsCustomer[customerChatCount]; // 고객 채팅 텍스트
+                chat.AdjustWidthBasedOnText();
+                chat.animator.Play("Chat");
+                activeChats.Add(chat);
+                currentRepeatCount++;
+                customerChatCount++;  // 고객 채팅 카운트 증가
+            }
         }
-        if (mine)
+
+        if (currentRepeatCount >= currentChatOrder)
         {
-            DeactivateChats(mineChatPool);
-            Chat chat = GetChatFromPool(mineChatPool, mineChatTransform);
-            chat.text.text = chatText[DonDestory.Instance.day - 1].chatTextsMine[chatCount];
-            chat.animator.Play("Chat");
-            activeChats.Add(chat);
-            mine = false;
+            currentRepeatCount = 0; // 반복 횟수 초기화
+            chatOrderIndex++; // 다음 차례로 이동
         }
-        else
+
+        // chatOrderIndex가 마지막 차례를 넘지 않도록 처리
+        if (chatOrderIndex >= currentChatText.chatOrder.Count)
         {
-            DeactivateChats(customerChatPool);
-            Chat chat = GetChatFromPool(customerChatPool, customerChatTransform);
-            chat.text.text = chatText[DonDestory.Instance.day - 1].chatTextsCustomer[chatCount];
-            chat.animator.Play("Chat");
-            activeChats.Add(chat);
-            chatCount++;
-            mine = true;
+            chatOrderIndex = 0;
         }
     }
 
@@ -103,7 +125,6 @@ public class ChatMgr : MonoBehaviour
 
                 chat.animator.Rebind();
                 chat.animator.Update(0f);
-
                 chat.gameObject.SetActive(true);
                 return chat;
             }
@@ -117,6 +138,7 @@ public class ChatMgr : MonoBehaviour
         newChat.animator.Update(0f);
 
         pool.Add(newChat);
+
         return newChat;
     }
 
@@ -166,12 +188,15 @@ public class ChatMgr : MonoBehaviour
         chat.gameObject.SetActive(false);
     }
 }
+
 [System.Serializable]
 public class ChatText
 {
-    public string[] chatTextsMine;
-    public string[] chatTextsCustomer;
+    public string[] chatTextsMine;      // 마인의 채팅 텍스트 배열
+    public string[] chatTextsCustomer;  // 고객의 채팅 텍스트 배열
+    public List<int> chatOrder = new List<int>(); // 말할 순서 리스트 (1, 2, 3 등)
 }
+
 public enum GameType
 {
     Ball,
